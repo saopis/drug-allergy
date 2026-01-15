@@ -16,8 +16,9 @@ app.use(express.json());
 
 async function drugallergy_first_sync() {
     try {
-        console.log('================BEGIN FIRST SYNC DRUG_ALLERGY====================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
+        console.log('================START FIRST SYNC DRUG_ALLERGY====================');
+        console.log(start);
         console.log('====================================');
         let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn `);
         if (opdAllergyFromHosArray1.length > 0) {
@@ -62,10 +63,11 @@ async function drugallergy_first_sync() {
                 }
             }
         }
+        let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
         console.log('=================DONE FIRST SYNC DRUG_ALLERGY SUCCESSFULLY!===================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        console.log(end);
         console.log('====================================');
-        return { status: 'success', message: 'First sync drug allergy completed successfully.' };
+        return { status: 'success', message: 'First sync drug allergy completed successfully.', start, end };
     } catch (error) {
         console.log(error);
     }
