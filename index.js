@@ -17,7 +17,7 @@ app.use(express.json());
 async function drugallergy_first_sync() {
     try {
         let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('================START FIRST SYNC DRUG_ALLERGY====================');
+        console.log('================ START FIRST SYNC DRUG_ALLERGY ====================');
         console.log(start);
         console.log('====================================');
         let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn `);
@@ -50,7 +50,7 @@ async function drugallergy_first_sync() {
                             "INSERT INTO dg_allergy (`cid`, `pname`, `ages`, `nhome`, `roads`, `moo`, `tumbol`, `ampur`, `pvince`, `addre`, `drugname`, `smptom`, `level`, `datekey`, `hcode`, `actives`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Y')",
                             [cids, fulname, birthday, addrpart, road, moopart, tmbpart, amppart, chwpart, addre, agents, symptom, relation_level, report_date, hcode_n]
                         )
-                        console.log('================INSERT SUCCESSFULLY!!====================');
+                        console.log('================ INSERT SUCCESSFULLY!! ====================');
                         console.log({
                             update_datetime: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss'),
                             hcode_n,
@@ -64,7 +64,7 @@ async function drugallergy_first_sync() {
             }
         }
         let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('=================DONE FIRST SYNC DRUG_ALLERGY SUCCESSFULLY!===================');
+        console.log('================= END FIRST SYNC DRUG_ALLERGY ===================');
         console.log(end);
         console.log('====================================');
         return { status: 'success', message: 'First sync drug allergy completed successfully.', start, end };
@@ -76,7 +76,7 @@ async function drugallergy_first_sync() {
 async function drugallergy_sync() {
     try {
         let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('================START SYNC DRUG_ALLERGY====================');
+        console.log('================ START SYNC DRUG_ALLERGY ====================');
         console.log(start);
         console.log('====================================');
         let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn WHERE o.update_datetime >= (SELECT CONCAT(date(NOW() - INTERVAL 5 DAY),' 00:00:01') ) `);
@@ -109,7 +109,7 @@ async function drugallergy_sync() {
                             "INSERT INTO dg_allergy (`cid`, `pname`, `ages`, `nhome`, `roads`, `moo`, `tumbol`, `ampur`, `pvince`, `addre`, `drugname`, `smptom`, `level`, `datekey`, `hcode`, `actives`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Y')",
                             [cids, fulname, birthday, addrpart, road, moopart, tmbpart, amppart, chwpart, addre, agents, symptom, relation_level, report_date, hcode_n]
                         )
-                        console.log('================INSERT SUCCESSFULLY!!====================');
+                        console.log('================ INSERT SUCCESSFULLY!! ====================');
                         console.log({
                             update_datetime: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss'),
                             hcode_n,
@@ -124,7 +124,7 @@ async function drugallergy_sync() {
             }
         }
         let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('=================END SYNC DRUG_ALLERGY===================');
+        console.log('================= END SYNC DRUG_ALLERGY ===================');
         console.log(end);
         console.log('====================================');
         return { status: 'success', message: 'Sync drug allergy completed successfully.', start, end };
@@ -136,7 +136,7 @@ async function drugallergy_sync() {
 async function syncHN() {
     try {
         let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('================START SYNC HN====================');
+        console.log('================ START SYNC HN ====================');
         console.log(start);
         console.log('====================================');
         let daten1 = dayjs().format('YYYY-MM-DD');
@@ -177,11 +177,14 @@ async function syncHN() {
                 for (const opd of opdAllergy) {
                     let gds = opd.gds;
                     await hosConnectionPool.execute("UPDATE patient SET drugallergy=? WHERE hn=?", [gds, dhn]);
+                    console.log('================UPDATE SUCCESSFULLY!!====================');
+                    console.log(` HN:${dhn} -> drugallergy = ${gds}`);
+                    console.log('====================================');
                 }
             }
         }
         let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
-        console.log('================END SYNC HN====================');
+        console.log('================ END SYNC HN ====================');
         console.log(end);
         console.log('====================================');
         return { status: 'success', message: 'Sync HN completed successfully.', start, end };
