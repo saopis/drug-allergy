@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  drug-allergy:
+    build: 
+      context: .
+      args:
+        - NODE_ENV=production
+    restart: unless-stopped
+    container_name: drug_allergy
+    ports:
+      - "${PORT}:5002"
+    environment:
+      - NODE_ENV=production
+      
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: yarn start
+    networks:
+      - website_net
+networks:
+  website_net:
+    external: true

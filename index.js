@@ -65,6 +65,7 @@ async function drugallergy_first_sync() {
         console.log('=================DONE FIRST SYNC DRUG_ALLERGY SUCCESSFULLY!===================');
         console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
         console.log('====================================');
+        return { status: 'success', message: 'First sync drug allergy completed successfully.' };
     } catch (error) {
         console.log(error);
     }
@@ -114,6 +115,7 @@ async function drugallergy_sync() {
                             message: $update_datetime + " : " + $hcode_n + " " + $cids + "=" + $agents,
                         });
                         console.log('====================================');
+                        
                     }
                 }
             }
@@ -121,6 +123,7 @@ async function drugallergy_sync() {
         console.log('=================DONE SYNC DRUG_ALLERGY SUCCESSFULLY!===================');
         console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
         console.log('====================================');
+        return { status: 'success', message: 'Sync drug allergy completed successfully.' };
     } catch (error) {
         console.log(error);
     }
@@ -179,6 +182,7 @@ async function syncHN() {
         console.log('================INSERT | drug To HOSxP | SUCCESSFULLY!!====================');
         console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
         console.log('====================================');
+        return { status: 'success', message: 'Sync HN completed successfully.' };
 
     } catch (error) {
         console.log(error);
@@ -189,16 +193,17 @@ cron.schedule('*/30 * * * *', async () => {
     await drugallergy_sync();
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
 
 app.get('/', async (req, res) => {
-    let results = await drugallergy_first_sync();
+    let results = await drugallergy_sync();
     res.json(results);
 });
 app.get('/drugallergy_first_sync', async (req, res) => {
     let results = await drugallergy_first_sync();
+    res.json(results);
+});
+app.get('/drugallergy_sync', async (req, res) => {
+    let results = await drugallergy_sync();
     res.json(results);
 });
 app.get('/status', (req, res) => {
@@ -207,4 +212,9 @@ app.get('/status', (req, res) => {
 app.get('/syncHN', async (req, res) => {
     await syncHN();
     res.send('Cron job is running');
+});
+
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

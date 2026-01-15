@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "npx nodemon index.js",
+    "start": "npx node index.js",
+    "dev": "npx nodemon index.js",
+    "deploy": "pm2 start index.js --name \"drug allergy port 5002\" ",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
