@@ -73,8 +73,9 @@ async function drugallergy_first_sync() {
 
 async function drugallergy_sync() {
     try {
-        console.log('================BEGIN SYNC DRUG_ALLERGY====================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
+        console.log('================START SYNC DRUG_ALLERGY====================');
+        console.log(start);
         console.log('====================================');
         let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn WHERE o.update_datetime >= (SELECT CONCAT(date(NOW() - INTERVAL 5 DAY),' 00:00:01') ) `);
         if (opdAllergyFromHosArray1.length > 0) {
@@ -120,10 +121,11 @@ async function drugallergy_sync() {
                 }
             }
         }
-        console.log('=================DONE SYNC DRUG_ALLERGY SUCCESSFULLY!===================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
+        console.log('=================END SYNC DRUG_ALLERGY===================');
+        console.log(end);
         console.log('====================================');
-        return { status: 'success', message: 'Sync drug allergy completed successfully.' };
+        return { status: 'success', message: 'Sync drug allergy completed successfully.', start, end };
     } catch (error) {
         console.log(error);
     }
@@ -131,8 +133,9 @@ async function drugallergy_sync() {
 
 async function syncHN() {
     try {
-        console.log('================BEGIN SYNC HN====================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        let start = dayjs().format('DD-MM-BBBB HH:mm:ss');
+        console.log('================START SYNC HN====================');
+        console.log(start);
         console.log('====================================');
         let daten1 = dayjs().format('YYYY-MM-DD');
         let daten2 = dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -175,11 +178,11 @@ async function syncHN() {
                 }
             }
         }
-        console.log('================SYNC HN SUCCESSFULLY!!====================');
-        console.log('================INSERT | drug To HOSxP | SUCCESSFULLY!!====================');
-        console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
+        let end = dayjs().format('DD-MM-BBBB HH:mm:ss');
+        console.log('================END SYNC HN====================');
+        console.log(end);
         console.log('====================================');
-        return { status: 'success', message: 'Sync HN completed successfully.' };
+        return { status: 'success', message: 'Sync HN completed successfully.', start, end };
 
     } catch (error) {
         console.log(error);
