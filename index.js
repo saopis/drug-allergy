@@ -19,43 +19,43 @@ async function drugallergy_first_sync() {
         console.log('================BEGIN FIRST SYNC DRUG_ALLERGY====================');
         console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
         console.log('====================================');
-        let [opdAllergyFromHosArray] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn `);
-        if (opdAllergyFromHosArray.length > 0) {
-            for (const opdAllergyFromHos of opdAllergyFromHosArray) {
-                let cid = opdAllergyFromHos.cid;
-                let agent = opdAllergyFromHos.agent;
-                let hcode = opdAllergyFromHos.hcode;
-                let update_datetime = opdAllergyFromHos.update_datetime;
+        let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn `);
+        if (opdAllergyFromHosArray1.length > 0) {
+            for (const opdAllergyFromHos1 of opdAllergyFromHosArray1) {
+                let cid = opdAllergyFromHos1.cid;
+                let agent = opdAllergyFromHos1.agent;
+                let hcode = opdAllergyFromHos1.hcode;
+                let update_datetime = opdAllergyFromHos1.update_datetime;
                 let [dgAllergyFromCentralArray] = await centralConnectionPool.execute(`SELECT o.drugname FROM dg_allergy o WHERE o.cid=? AND o.drugname=? AND o.hcode=?`, [cid, agent, hcode]);
                 if (dgAllergyFromCentralArray.length < 1) {
-                    let [opdAllergyFromHosArray] = await hosConnectionPool.execute("SELECT p.cid,CONCAT(p.pname,p.fname,' ',p.lname) AS fulname,p.birthday,p.addrpart,p.road,p.moopart,p.tmbpart,p.amppart,p.chwpart,'' AS addre,o.agent,o.symptom,o.relation_level,o.report_date,p.hcode AS hcode_n FROM opd_allergy o LEFT JOIN patient p ON o.hn=p.hn LEFT JOIN thaiaddress t1 ON CONCAT(p.chwpart,p.amppart,p.tmbpart)=t1.addressid WHERE p.cid=? AND o.agent=? AND p.hcode=? AND p.cid<>'' AND p.fname<>''", [cid, agent, hcode]);
-                    for (const opdAllergyFromHos of opdAllergyFromHosArray) {
-                        let cids = opdAllergyFromHos.cid;
-                        let fulname = opdAllergyFromHos.fulname;
-                        let birthday = opdAllergyFromHos.birthday;
-                        let addrpart = opdAllergyFromHos.addrpart;
-                        let road = opdAllergyFromHos.road;
-                        let moopart = opdAllergyFromHos.moopart;
-                        let tmbpart = opdAllergyFromHos.tmbpart;
-                        let amppart = opdAllergyFromHos.amppart;
-                        let chwpart = opdAllergyFromHos.chwpart;
-                        let addre = opdAllergyFromHos.addre;
-                        let agents = opdAllergyFromHos.agent;
-                        let symptom = opdAllergyFromHos.symptom;
-                        let relation_level = opdAllergyFromHos.relation_level;
-                        let report_date = opdAllergyFromHos.report_date;
-                        let hcode_n = opdAllergyFromHos.hcode_n;
+                    let [opdAllergyFromHosArray2] = await hosConnectionPool.execute("SELECT p.cid,CONCAT(p.pname,p.fname,' ',p.lname) AS fulname,p.birthday,p.addrpart,p.road,p.moopart,p.tmbpart,p.amppart,p.chwpart,'' AS addre,o.agent,o.symptom,o.relation_level,o.report_date,p.hcode AS hcode_n FROM opd_allergy o LEFT JOIN patient p ON o.hn=p.hn LEFT JOIN thaiaddress t1 ON CONCAT(p.chwpart,p.amppart,p.tmbpart)=t1.addressid WHERE p.cid=? AND o.agent=? AND p.hcode=? AND p.cid<>'' AND p.fname<>''", [cid, agent, hcode]);
+                    for (const opdAllergyFromHos2 of opdAllergyFromHosArray2) {
+                        let cids = opdAllergyFromHos2.cid;
+                        let fulname = opdAllergyFromHos2.fulname;
+                        let birthday = opdAllergyFromHos2.birthday;
+                        let addrpart = opdAllergyFromHos2.addrpart;
+                        let road = opdAllergyFromHos2.road;
+                        let moopart = opdAllergyFromHos2.moopart;
+                        let tmbpart = opdAllergyFromHos2.tmbpart;
+                        let amppart = opdAllergyFromHos2.amppart;
+                        let chwpart = opdAllergyFromHos2.chwpart;
+                        let addre = opdAllergyFromHos2.addre;
+                        let agents = opdAllergyFromHos2.agent;
+                        let symptom = opdAllergyFromHos2.symptom;
+                        let relation_level = opdAllergyFromHos2.relation_level;
+                        let report_date = opdAllergyFromHos2.report_date;
+                        let hcode_n = opdAllergyFromHos2.hcode_n;
                         await centralConnectionPool.execute(
                             "INSERT INTO dg_allergy (`cid`, `pname`, `ages`, `nhome`, `roads`, `moo`, `tumbol`, `ampur`, `pvince`, `addre`, `drugname`, `smptom`, `level`, `datekey`, `hcode`, `actives`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Y')",
                             [cids, fulname, birthday, addrpart, road, moopart, tmbpart, amppart, chwpart, addre, agents, symptom, relation_level, report_date, hcode_n]
                         )
                         console.log('================INSERT SUCCESSFULLY!!====================');
                         console.log({
-                            update_datetime,
+                            update_datetime: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss'),
                             hcode_n,
                             cids,
                             agents,
-                            message: $update_datetime + " : " + $hcode_n + " " + $cids + "=" + $agents,
+                            message: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss') + " : " + hcode_n + " " + cids + "=" + agents,
                         });
                         console.log('====================================');
                     }
@@ -76,46 +76,46 @@ async function drugallergy_sync() {
         console.log('================BEGIN SYNC DRUG_ALLERGY====================');
         console.log(dayjs().format('DD-MM-BBBB HH:mm:ss'));
         console.log('====================================');
-        let [opdAllergyFromHosArray] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn WHERE o.update_datetime >= (SELECT CONCAT(date(NOW() - INTERVAL 5 DAY),' 00:00:01') ) `);
-        if (opdAllergyFromHosArray.length > 0) {
-            for (const opdAllergyFromHos of opdAllergyFromHosArray) {
-                let cid = opdAllergyFromHos.cid;
-                let agent = opdAllergyFromHos.agent;
-                let hcode = opdAllergyFromHos.hcode;
-                let update_datetime = opdAllergyFromHos.update_datetime;
+        let [opdAllergyFromHosArray1] = await hosConnectionPool.execute(`SELECT p.cid,o.agent,p.hcode,o.update_datetime FROM opd_allergy o INNER JOIN patient p ON o.hn=p.hn WHERE o.update_datetime >= (SELECT CONCAT(date(NOW() - INTERVAL 5 DAY),' 00:00:01') ) `);
+        if (opdAllergyFromHosArray1.length > 0) {
+            for (const opdAllergyFromHos1 of opdAllergyFromHosArray1) {
+                let cid = opdAllergyFromHos1.cid;
+                let agent = opdAllergyFromHos1.agent;
+                let hcode = opdAllergyFromHos1.hcode;
+                let update_datetime = opdAllergyFromHos1.update_datetime;
                 let [dgAllergyFromCentralArray] = await centralConnectionPool.execute(`SELECT o.drugname FROM dg_allergy o WHERE o.cid=? AND o.drugname=? AND o.hcode=?`, [cid, agent, hcode]);
                 if (dgAllergyFromCentralArray.length < 1) {
-                    let [opdAllergyFromHosArray] = await hosConnectionPool.execute("SELECT p.cid,CONCAT(p.pname,p.fname,' ',p.lname) AS fulname,p.birthday,p.addrpart,p.road,p.moopart,p.tmbpart,p.amppart,p.chwpart,'' AS addre,o.agent,o.symptom,o.relation_level,o.report_date,p.hcode AS hcode_n FROM opd_allergy o LEFT JOIN patient p ON o.hn=p.hn LEFT JOIN thaiaddress t1 ON CONCAT(p.chwpart,p.amppart,p.tmbpart)=t1.addressid WHERE p.cid=? AND o.agent=? AND p.hcode=? AND p.cid<>'' AND p.fname<>''", [cid, agent, hcode]);
-                    for (const opdAllergyFromHos of opdAllergyFromHosArray) {
-                        let cids = opdAllergyFromHos.cid;
-                        let fulname = opdAllergyFromHos.fulname;
-                        let birthday = opdAllergyFromHos.birthday;
-                        let addrpart = opdAllergyFromHos.addrpart;
-                        let road = opdAllergyFromHos.road;
-                        let moopart = opdAllergyFromHos.moopart;
-                        let tmbpart = opdAllergyFromHos.tmbpart;
-                        let amppart = opdAllergyFromHos.amppart;
-                        let chwpart = opdAllergyFromHos.chwpart;
-                        let addre = opdAllergyFromHos.addre;
-                        let agents = opdAllergyFromHos.agent;
-                        let symptom = opdAllergyFromHos.symptom;
-                        let relation_level = opdAllergyFromHos.relation_level;
-                        let report_date = opdAllergyFromHos.report_date;
-                        let hcode_n = opdAllergyFromHos.hcode_n;
+                    let [opdAllergyFromHosArray2] = await hosConnectionPool.execute("SELECT p.cid,CONCAT(p.pname,p.fname,' ',p.lname) AS fulname,p.birthday,p.addrpart,p.road,p.moopart,p.tmbpart,p.amppart,p.chwpart,'' AS addre,o.agent,o.symptom,o.relation_level,o.report_date,p.hcode AS hcode_n FROM opd_allergy o LEFT JOIN patient p ON o.hn=p.hn LEFT JOIN thaiaddress t1 ON CONCAT(p.chwpart,p.amppart,p.tmbpart)=t1.addressid WHERE p.cid=? AND o.agent=? AND p.hcode=? AND p.cid<>'' AND p.fname<>''", [cid, agent, hcode]);
+                    for (const opdAllergyFromHos2 of opdAllergyFromHosArray2) {
+                        let cids = opdAllergyFromHos2.cid;
+                        let fulname = opdAllergyFromHos2.fulname;
+                        let birthday = opdAllergyFromHos2.birthday;
+                        let addrpart = opdAllergyFromHos2.addrpart;
+                        let road = opdAllergyFromHos2.road;
+                        let moopart = opdAllergyFromHos2.moopart;
+                        let tmbpart = opdAllergyFromHos2.tmbpart;
+                        let amppart = opdAllergyFromHos2.amppart;
+                        let chwpart = opdAllergyFromHos2.chwpart;
+                        let addre = opdAllergyFromHos2.addre;
+                        let agents = opdAllergyFromHos2.agent;
+                        let symptom = opdAllergyFromHos2.symptom;
+                        let relation_level = opdAllergyFromHos2.relation_level;
+                        let report_date = opdAllergyFromHos2.report_date;
+                        let hcode_n = opdAllergyFromHos2.hcode_n;
                         await centralConnectionPool.execute(
                             "INSERT INTO dg_allergy (`cid`, `pname`, `ages`, `nhome`, `roads`, `moo`, `tumbol`, `ampur`, `pvince`, `addre`, `drugname`, `smptom`, `level`, `datekey`, `hcode`, `actives`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Y')",
                             [cids, fulname, birthday, addrpart, road, moopart, tmbpart, amppart, chwpart, addre, agents, symptom, relation_level, report_date, hcode_n]
                         )
                         console.log('================INSERT SUCCESSFULLY!!====================');
                         console.log({
-                            update_datetime,
+                            update_datetime: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss'),
                             hcode_n,
                             cids,
                             agents,
-                            message: $update_datetime + " : " + $hcode_n + " " + $cids + "=" + $agents,
+                            message: dayjs(update_datetime).format('DD-MM-BBBB HH:mm:ss') + " : " + hcode_n + " " + cids + "=" + agents,
                         });
                         console.log('====================================');
-                        
+
                     }
                 }
             }
@@ -148,8 +148,7 @@ async function syncHN() {
                 let drugnamehos = dgAllergy.drugname;
                 let smptom = dgAllergy.smptom;
                 let dgnote = "ระบบเชื่อมเครือข่าย " + hcodehos;
-                console.log(dgAllergy);
-
+                // console.log(dgAllergy);
                 let [dataFromHosArray] = await hosConnectionPool.execute("SELECT p.hn FROM patient p WHERE p.cid='?'", [cidhos]);
                 if (dataFromHosArray.length > 0) {
                     for (const dataFromHos of dataFromHosArray) {
@@ -191,6 +190,7 @@ async function syncHN() {
 
 cron.schedule('*/30 * * * *', async () => {
     await drugallergy_sync();
+    await syncHN();
 });
 
 
@@ -206,15 +206,16 @@ app.get('/drugallergy_sync', async (req, res) => {
     let results = await drugallergy_sync();
     res.json(results);
 });
+app.get('/syncHN', async (req, res) => {
+    let results = await syncHN();
+    res.json(results);
+});
 app.get('/status', (req, res) => {
     res.send('Cron job is running');
 });
-app.get('/syncHN', async (req, res) => {
-    await syncHN();
-    res.send('Cron job is running');
-});
 
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
+    await drugallergy_first_sync();
 });
