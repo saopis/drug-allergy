@@ -138,9 +138,7 @@ async function syncHN() {
         let daten2 = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
         let [dgAllergyArray] = await centralConnectionPool.execute(`SELECT d.hcode,d.cid,d.drugname,d.smptom FROM dg_allergy d WHERE d.hcode<>'${HPCODE}' AND d.cid IS NOT null AND d.cid NOT IN ('','0000000000000','1111111111111','1111111111119') AND d.drugname NOT LIKE '%ckd%' AND d.drugname NOT IN ('DICLOFENAC','IBUPROFEN','IBUPROFENSYR.','INDOMETHACIN','MEFENAMICACID','METFORMIN','MILK OF MAGNESIA') ORDER BY d.hcode`);
-        console.log('====================================');
-        console.log(HPCODE);
-        console.log('====================================');
+
         if (dgAllergyArray.length > 0) {
             for (const dgAllergy of dgAllergyArray) {
                 let hcodehos = dgAllergy.hcode;
